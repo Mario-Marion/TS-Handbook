@@ -652,7 +652,7 @@ type OneOrManyOrNullStrings = OneOrManyOrNull<string>;
 // OneOrManyOrNull 类型：type OneOrManyOrNullStrings = OneOrMany<string> | null
 ```
 ### 数组类型
-泛型对象类型通常是某种容器类型，其工作独立于它们包含的元素类型。数据结构以这种方式工作是非常理想的，这样它们就可以跨不同的数据类型重用。在本手册中，我们一直在使用类似的类型：`Array` 类型。
+泛型对象类型通常是某种容器类型，其使用于元素类型独立它们的容器。数据结构以这种方式工作是非常理想的，这样它们就可以跨不同的数据类型重用。在本手册中，我们一直在使用类似的类型：`Array` 类型。
 
 每当我们编写像 `number[]` 或 `string[]` 这样的类型时，实际上只是 `Array<number>` 和 `Array<string>` 的缩写。
 ```ts
@@ -722,7 +722,7 @@ function doStuff(values: readonly string[]) {
      // Error：属性 'push' 不存在 'readonly string[]' 类型上。
 }
 ```
-最后需要注意的一点是，TypeScript 在检查两种对象类型是否兼容时，不会考虑这两种类型的属性是否为只读的（可回顾上面的 [readonly 属性](#heading-3)）。而常规的 `Array` 类型和 `ReadonlyArray` 类型之间的赋值不是双向的，也就是说数值检查兼容时是有考虑 `readonly` 的。
+最后需要注意的一点是，TypeScript 在检查两种对象类型是否兼容时，不会考虑这两种类型的属性是否为只读的（可回顾上面的 [readonly 属性](#heading-3)）。而常规的 `Array` 类型和 `ReadonlyArray` 类型之间的赋值不是双向的，也就是说数组检查兼容时是有考虑 `readonly` 的。
 ```ts
 let x: readonly string[] = [];
 let y: string[] = [];
@@ -737,7 +737,7 @@ y = x; // error
 ```ts
 type StringNumberPair = [string, number];
 ```
-例子中，`StringNumberPair` 是 `string` 和 `number` 元组类型。像 `ReadonlyArray` 一样，不会影响代码运行时行为，但对 TypeScript 来说很重要。在类型系统中，`StringNumberPair` 描述了一个数组，索引 `0` 为字符串元素，索引 `1` 为数值元素。
+例子中，`StringNumberPair` 是 `string` 和 `number` 元组类型。像 `ReadonlyArray` 一样，不会影响代码运行时行为，但对 TypeScript 类型检查系统来说是重要的。在类型系统中，`StringNumberPair` 描述了一个数组，索引 `0` 为字符串元素，索引 `1` 为数值元素。
 ```ts
 function doSomething(pair: [string, number]) {
     const a = pair[0]; // a 类型：const a: string
@@ -764,7 +764,7 @@ function doSomething(stringHash: [string, number]) {
 ```
 > 元组类型在大量基于约定的 API 中非常有用，其中每个元素的含义都是"明显的"。这给了我们在解构变量时任意命名的灵活性。在上面的例子中，我们可以将元素 **0** 和 **1** 命名为任何我们想要的名称。
 >
-然而，由于不是每个用户都持有相同的看法，因此可能需要考虑使用具有描述性属性名（见名知意）的对象是否适合你的 API。
+> 然而，并不是每个用户都持有相同的看法，因此是否使用具有描述性属性名（见名知意）的对象是否适合你的 API 取决于你自己。
 
 抛开长度检查不谈，简单的元组类型等价于，指定元素为特定类型的数组类型，并使用数值字面量类型声明 `length` 属性，例如：
 ```ts

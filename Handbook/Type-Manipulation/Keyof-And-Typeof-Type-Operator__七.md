@@ -20,7 +20,7 @@ type M = keyof Mapish;
 ```
 注意，在例子中，`M` 是 `string | number`，这是因为 JavaScript 对象的键总是强转为字符串，允许`object[0]` 这种写法，最终都会被 JS 转为 `obj["0"]`。
 
-当与映射类型结合使用时，`Keyof` 类型变得特别有用（可参考另一篇文章：[映射类型](https://juejin.cn/editor/drafts/7207299650323300411)）。
+当与映射类型结合使用时，`Keyof` 类型变得特别有用（可参考另一篇文章：[映射类型](https://juejin.cn/post/7208200530307874853)）。
 
 ## Typeof 操作符
 

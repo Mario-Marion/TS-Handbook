@@ -498,9 +498,6 @@ console.log(d.m);
 class Base {
     protected x: number = 1;
 }
-class Derived1 extends Base {
-    protected x: number = 5;
-}
 class Derived2 extends Base {
     f1(other: Derived2) {
         other.x = 10;
@@ -676,7 +673,7 @@ const MyHelperObject = {
 };
 ```
 ## 类中的静态块
-静态块允许你编写自己作用域的语句序列，并可以访问类中的私有字段。这意味着可以用写语句的方式来写初始化代码，不会泄露变量，并完全访问类的内部。
+静态块允许你编写自己作用域的语句序列，this 引用为类，并可以访问类中的静态私有字段。这意味着可以用写语句的方式来写初始化代码，不会泄露变量，并完全访问类的内部。
 ```ts
 class Foo {
     static #count = 0;
@@ -686,7 +683,7 @@ class Foo {
     static {
         try {
             const lastInstances = loadLastInstances();
-            Foo.#count += lastInstances.length;
+            this.#count += lastInstances.length;
         }
         catch {}
     }
@@ -1003,6 +1000,41 @@ greet(Base);
 // Argument of type 'typeof Base' is not assignable to parameter of type 'new () => Base'. // Cannot assign an abstract constructor type to a non-abstract constructor type.
 ```
 现在 TypeScript 正确地告诉你哪些类构造函数是可以被调用的—— `Derived` 可以，因为它是具体类，但 `Base` 不能。
+
+### 抽象类继承抽象类
+
+抽象类继承抽象类，两抽象类会进行合并。如果存在相同的抽象方法和字段，会有以下规则：
+
+- 相同字段方法类型不同会报错
+- 派生类相同字段方法类型为 `any`，则使用 `any`
+- 派生类相同字段方法类型为父类相同字段方法类型的子类型，则使用子类型
+
+
+```ts
+abstract class Base {
+  abstract getName(): string;
+  abstract asd: string
+  printName() {
+    console.log("Hello, " + this.getName());
+  }
+}
+abstract class Bag extends Base {
+  abstract getName(): any;  // 相同抽象方法,返回值改为any，不报错
+  abstract asd: '456' // 相同抽象字段，返回值改为 string 子类型，不报错
+  abstract a: number
+}
+class Derived extends Bag {
+  constructor(public asd: '456',public a:number) {
+    super()
+  }
+  getName() {
+    return ['World'];
+  }
+}
+const d = new Derived('456',123);
+d.printName();
+```
+
 ## 类之间的关系
 大多数情况下，TypeScript 中的类与其它类型一样，进行结构比较：
 

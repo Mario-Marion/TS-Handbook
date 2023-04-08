@@ -175,4 +175,4 @@ const Q2: QuerySelectorAll= (str) => {
 
 > 官网文档地址： <https://www.typescriptlang.org/docs/handbook/dom-manipulation.html>
 >
-> 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>
+> 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook/tree/main/Tutorials>

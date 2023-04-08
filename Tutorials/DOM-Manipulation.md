@@ -171,7 +171,8 @@ const Q2: QuerySelectorAll= (str) => {
 例子中，`Q1` 指定了泛型 `E` 为 `456`，`456` 为 `number` 的子类型，符合约束，返回值为数组，元素为 `456`。`Q2` 没指定泛型，所以 `E` 为 `123`，因为默认值是 `123`，返回值为数组，元素为 `123`。默认值也要受到 `number` 的约束，例子中默认值为 `123`，是 `number` 的子类型，所以正确。例子中如果默认值为 `string` 或其它类型是不行的。
 
 
+感谢观看，如有错误，望指正
 
-感谢观看，欢迎互相讨论与指导，以下是参考资料链接🔗
-
-<https://www.typescriptlang.org/docs/handbook/dom-manipulation.html>
+> 官网文档地址： <https://www.typescriptlang.org/docs/handbook/dom-manipulation.html>
+>
+> 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>

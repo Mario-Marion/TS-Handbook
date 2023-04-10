@@ -44,4 +44,4 @@
 - [TypeScript for OOP Programmers](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-oop.html)
 - [TypeScript for Functional Programmers](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html)
 
-直接开始 [The Basics](https://www.typescriptlang.org/docs/handbook/2/basic-types.html)
+直接开始 [The Basics](https://github.com/Mario-Marion/TS-Handbook/blob/main/Handbook/The-Basics__%E4%B8%80.md)

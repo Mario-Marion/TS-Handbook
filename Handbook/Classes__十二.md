@@ -969,7 +969,7 @@ class Derived extends Base {
 }
 ```
 ### 抽象构造签名
-有时你想接受一些类构造函数，产生一个类实例，派生自某个抽象类。
+有时你想接受一些类构造函数（该类继承自某个抽象类），并产生一个类实例。
 
 你可能会写这种代码：
 ```ts
@@ -983,7 +983,9 @@ function greet(ctor: typeof Base) {
     instance.printName();
 }
 ```
-TypeScript 提示你，你正在尝试实例化一个抽象类。例子中，根据 `greet` 的定义，传入抽象类 `Base` 是完全合法的：
+TypeScript 提示你，你正在尝试实例化一个抽象类。
+
+而根据 `greet` 的定义，传入抽象类 `Base` 是完全合法的，这种写法很不好：
 ```ts
 // Bad!
 greet(Base);

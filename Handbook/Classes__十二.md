@@ -154,7 +154,8 @@ class C {
     }
 }
 ```
-### 属性修饰符 Getters / Setters
+### 访问器 Getters / Setters
+
 类同样也有访问器
 ```ts
 class C {
@@ -1087,4 +1088,3 @@ fn(fn);
 > 官网文档地址： <https://www.typescriptlang.org/docs/handbook/2/classes.html>
 >
 > 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>
-

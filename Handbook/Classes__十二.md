@@ -339,7 +339,7 @@ b.greet();
 
 #### 纯类型字段声明
 
-当 `target >= ES2022` 或 [useDefineForClassFields](https://www.typescriptlang.org/tsconfig#useDefineForClassFields) 为真时，类字段在父类构造函数完成后初始化，覆盖父类设置的任何值。当你只是想要对继承的字段重新声明更精确的类型时，这是一个问题。为了处理这些情况，你可以写 `declare` 来告诉 TypeScript 这个字段声明不应该有运行时作用。
+当 `tsconfig` 中 `target >= ES2022` 或 [useDefineForClassFields](https://www.typescriptlang.org/tsconfig#useDefineForClassFields) 为 `true` 时，类字段在父类构造函数完成后初始化，覆盖父类设置的任何值。当你只是想要对继承的字段重新声明更精确的类型时，这是一个问题。为了处理这些情况，你可以写 `declare` 来告诉 TypeScript 这个字段声明不应该有运行时作用。
 
 ```ts
 interface Animal {
@@ -1088,3 +1088,4 @@ fn(fn);
 > 官网文档地址： <https://www.typescriptlang.org/docs/handbook/2/classes.html>
 >
 > 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>
+

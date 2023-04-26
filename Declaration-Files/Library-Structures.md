@@ -162,7 +162,7 @@ globalThis.createGreeting = function (s) {
 
 #### 全局库模板
 
-模板文件 [global.d.ts](https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-plugin-d-ts.html) 定义了一个示例库 `myLib`。一定要阅读 ["防止名称冲突" 的脚注](https://www.typescriptlang.org/docs/handbook/declaration-files/library-structures.html#preventing-name-conflicts)。
+模板文件 [global.d.ts](https://www.typescriptlang.org/docs/handbook/declaration-files/templates/global-plugin-d-ts.html) 定义了一个示例库 `myLib`。一定要阅读 ["防止名称冲突" 的脚注](https://juejin.cn/post/7225886242259927097#heading-21)。
 
 ### ***UMD***
 
@@ -251,7 +251,7 @@ import * as someLib from "someLib";
 
 不要使用 `/// <reference` 指令来声明对 UMD 库的依赖！
 
-## 注脚
+## 脚注
 ### 防止命名冲突
 
 注意，当编写全局声明文件时，它可能在全局作用域定义许多类型。我们强烈反对这样做，因为当一个项目中有许多声明文件时，它可能导致无法解决的命名冲突。
@@ -294,5 +294,3 @@ var app = exp();
 > 官网文档地址： <https://www.typescriptlang.org/docs/handbook/declaration-files/library-structures.html>
 >
 > 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>
-
-

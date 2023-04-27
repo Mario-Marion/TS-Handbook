@@ -31,7 +31,7 @@ type FeatureOptions = OptionsFlags<FeatureFlags>;
 //     newUserProfile: boolean;
 // }
 ```
-> keyof Type 会产生一个 Type 类型的键的联合类型，而 in 会遍历这个联合类型，Property 就是当前遍历的键
+> keyof Type 会产生一个 Type 类型的键的联合类型，in 类似于 JS 中的 for...in，会遍历这个联合类型，Property 就是联合类型的成员
 ## 映射修饰符
 `-`，`+` 这两个附加符号能在映射期间应用 `readonly` 和 `?` 修饰符，分别影响属性可变性和可选性。
 
@@ -115,6 +115,21 @@ type LazyPerson = Getters<Person>;
 //    getLocation: () => string;
 //  }
 ```
+你可以通过条件类型生成 `never` 来过滤掉属性：
+```ts
+// Remove the 'kind' property
+type RemoveKindField<Type> = {
+    [Property in keyof Type as Exclude<Property, "kind">]: Type[Property]
+};
+
+interface Circle {
+    kind: "circle";
+    radius: number;
+}
+
+type KindlessCircle = RemoveKindField<Circle>;
+//   type KindlessCircle = { radius: number; }
+```
 你可以映射任意的联合类型，不只是 `string | number | symbol`：
 ```ts
 type EventConfig<Events extends { kind: string }> = {
@@ -147,9 +162,10 @@ type ObjectsNeedingGDPRDeletion = ExtractPII<DBFields>;
 // }
 ```
 
+感谢观看，如有错误，望指正
+
 
 > 官网文档地址： <https://www.typescriptlang.org/docs/handbook/2/mapped-types.html>
 >
 > 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>
-
 

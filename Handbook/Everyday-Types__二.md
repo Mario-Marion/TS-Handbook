@@ -1,7 +1,3 @@
----
-highlight: vs2015
----
-
 # Everyday Types
 本章节将介绍一些在 JavaScript 中常见的值的类型，并讲解在 TypeScript 中，描述这些类型的相应方法。没讲解到的类型，将在以后的章节描述。
 
@@ -247,6 +243,9 @@ type ID = number | string;
 ```
 请注意，别名只是别名而已——你不能使用类型别名来创建同一类型的不同的 “版本”。当您使用别名时，就像你编写了实际类型一样。如下例子，这段代码可能看起来不合法，但其实是没问题的，因为 `UserInputSanitizedString` 和 `new input` 都是 `string` 类型:
 ```ts
+declare function getInput(): string;
+declare function sanitize(str: string): string;
+// ---cut---
 type UserInputSanitizedString = string;
 
 function sanitizeInput(str: string): UserInputSanitizedString {
@@ -308,7 +307,7 @@ const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
 TypeScript只允许类型断言为更具体或更宽松的类型。这条规则可以防止出现 “不可能的” 强制类型转换，例如:
 ```ts
 const x = "hello" as number;
-// 转换 "string" 类型为 "number" 类型可能是错误的，因为两种类型不能充分重叠。如果是故意的，请先将表达式转换为 "unknown" 在转 "number"
+// 转换 "string" 类型为 "number" 类型可能是错误的，因为两种类型不能充分重叠。如果是故意的，请先将表达式转换为 "unknown" 再转 "number"
 ```
 有时这条规则可能过于保守，可能不允许有效且更复杂的操作。那么你可以使用两个断言，首先指向 `any`（或 `unknow`，我们将在后面介绍），然后指向所需的类型:
 ```ts
@@ -419,7 +418,7 @@ JavaScript 有两个基本值用来表示不存在或未初始化： `null` 和 
 TypeScript 也有两个同名的对应类型。这些类型的行为取决于是否打开了 [strictNullChecks](https://www.typescriptlang.org/tsconfig#strictNullChecks) 选项。
 
 ### `strictNullChecks` 关闭
-关闭 strictNullChecks 后，可能为 `null` 或 `undefined` 的值仍然可以正常访问，并且 `null` 和 ` undefined` 的值可以分配给**对象任何类型的属性**。这类似于没有null检查的语言（如c#， Java）的行为。缺乏对这些值的检查往往是 bug 的主要来源；建议在代码库中使用严格的检查方法。
+关闭 strictNullChecks 后，可能为 `null` 或 `undefined` 的值仍然可以正常访问，并且 `null` 和 ` undefined` 的值可以分配给**对象任何类型的属性**。这类似于没有 null 检查的语言（如c#， Java）的行为。缺乏对这些值的检查往往是 bug 的主要来源；建议在代码库中使用严格的检查方法。
 ### `strictNullChecks` 开启
 开启 strictNullChecks 后，当值为 `null` 或 `undefined` 时，需要在使用该值的方法或属性之前，测试这些值。就像在使用可选属性之前检查是否为 `undefined` 一样。例如，使用缩窄来检查可能为 `null` 的值：
 ```ts
@@ -434,7 +433,7 @@ function doSomething(x: string | null) {
 ## 非空断言运算符（后缀 `!`）
 TypeScript 还有一个特殊的语法，可以在不做任何显式检查的情况下，从类型中删除 `null` 和 `undefined`。在任何表达式之后添加类型断言 `!` 都是有效的，表明该值不是 `null` 或 `undefined`：
 ## 枚举
-枚举是 TypeScript 添加到 JavaScript 的一个特性，它允许描述一个值，用一组命名常量的其中之一。与大多数 TypeScript 特性不同，枚举不是在类型层面添加到 JavaScript 中的，而是添加到了语言本身和运行时的。正因为如此，这是一个你应该知道的功能。你可以在[Enum reference page](https://www.typescriptlang.org/docs/handbook/enums.html) 中阅读更多关于枚举的信息。
+枚举是 TypeScript 添加到 JavaScript 的一个特性，它允许描述一个值，用一组命名常量的其中之一。与大多数 TypeScript 特性不同，枚举不是在类型层面添加到 JavaScript 中的，而是添加到了语言本身和运行时的。正因为如此，这是一个你应该知道的功能。你可以在 [Enum reference page](https://www.typescriptlang.org/docs/handbook/enums.html) 中阅读更多关于枚举的信息。
 ## 不常用原始类型
 在 JavaScript 中的其它原始类型，TypeScript 中也有对应的表示形式。在这里简单介绍下，不会深入讨论。
 ### bigInt
@@ -462,7 +461,6 @@ if (firstName === secondName) {
 
 感谢观看，如有错误，望指正
 
->官网地址： <https://www.typescriptlang.org/docs/handbook/2/everyday-types.html>
+> 官网文档地址： <https://www.typescriptlang.org/docs/handbook/2/everyday-types.html>
 >
->github 资料： <https://github.com/Mario-Marion/TS-Handbook>
-
+> 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>

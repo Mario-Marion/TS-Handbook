@@ -17,7 +17,7 @@ JavaScript 有三个常用的 [原始类型](https://developer.mozilla.org/en-US
 ## Arrays
 要表示像 `[1,2,3]` 这样的数组类型，你可以使用 `number[]` 语法。这个语法适用于任何数组类型（例如：string[] 是一个字符串数组）。你可能见过 `Array<number>` 这种写法，两种写法是一样的。学习泛型的时候再了解更多 `T<U>` 语法。
 
->注意！`[number]` 是不同的类型，可参考：[Tuples](https://www.typescriptlang.org/docs/handbook/2/objects.html#tuple-types)
+> 注意！`[number]` 是不同的类型，可参考：[Tuples](https://juejin.cn/post/7212101192745304120#heading-11)
 
 ## `any`
 TypeScript 也有特殊类型，`any`，可以用在你不想因类型检查而错误的特殊值。
@@ -66,13 +66,13 @@ function greet(name: string) {
     console.log("Hello, " + name.toUpperCase() + "!!");
 }
 ```
-当行参有类型注释的时候，该函数的参数将被检查:
+当形参有类型注释的时候，该函数传递实参时将被检查:
 ```ts
 // Would be a runtime error if executed!
 greet(42);
-// Error：'number' 类型的实参不能赋值给 'string' 类型的行参
+Error //'number' 类型的实参不能赋值给 'string' 类型的行参
 ```
->即使你的参数没有类型注释，TypeScript 也会检查你传递的参数数量是否正确。
+> 即使你的形参没有类型注释，TypeScript 也会检查你传递的实参数量是否正确。
 
 ### 返回类型注释
 你还可以添加返回类型注释，返回类型注释出现在形参列表的后面
@@ -84,33 +84,34 @@ function getFavoriteNumber(): number {
 很像变量类型注释，你通常不需要返回类型注释，因为 TypeScript 会基于函数的 `return` 语句推断出函数的返回类型。类型注释在上面的例子中没有改变任何东西。一些代码库会显式的指定返回类型用于文档说明。去防止意外的更改，或者只是出于个人喜好。
 
 ### 匿名函数
-匿名函数和函数声明略有不同，当一个函数出现在任何 TypeScript 可以确定它被调用的地方，该函数的参数将自动给定类型。
+匿名函数和函数声明略有不同，当一个函数出现在任何 TypeScript 可以确定它被调用的地方，该函数的参数将自动推断类型（根据上下文推断类型）。
 
 例如：
 ```ts
-// 这里没有类型注释，但是 TypeScript 可以发现错误
+// 匿名函数没有类型注释，但是 TypeScript 可以发现错误
+
 const names = ["Alice", "Bob", "Eve"];
 
 // 函数的上下文类型
 names.forEach(function (s) {
     console.log(s.toUppercase());
-    // Error：'string' 类型上不存在 'toUppercase' 属性。你是打算用 'toUpperCase' 吗？
+    Error: // 'string' 类型上不存在 'toUppercase' 属性。你是打算用 'toUpperCase' 吗？
 });
 
 // 上下文类型同样适用于箭头函数
 names.forEach((s) => {
     console.log(s.toUppercase());
-    // Error：'string' 类型上不存在 'toUppercase' 属性。你是打算用 'toUpperCase' 吗？
+    Error // 'string' 类型上不存在 'toUppercase' 属性。你是打算用 'toUpperCase' 吗？
 });
 ```
-尽管形参 `s` 没有类型注释，TypeScript 使用 `forEach` 方法的类型，以及推断出的数组类型，来确定参数 `s` 将具有的类型。
+尽管形参 `s` 没有类型注释，TypeScript 根据 `forEach` 方法的类型，以及数组类型，来确定参数 `s` 将具有的类型。
 
 这个过程称为上下文类型，因为函数发生的上下文告知它应该具有什么类型。
 
 和推断规则类似，你不需要明确了解是如何发生的，但了解它会发生什么，可以帮助您意识到何时不需要类型注释。稍后，我们将看到更多示例，解释值出现的上下文是如何影响其类型的。
 
 ## 对象类型
-除了原始类型，还经常的类型就是对象类型。指的是任何带有属性的 JavaScript 值，几乎所有值都是！让我们定义一个对象类型，简单列出它的属性和属性的类型。
+除了原始类型，还经常的类型就是对象类型。指的是任何带有属性的 JavaScript 值，几乎所有值都是！让我们定义一个对象类型，简单列出它的属性和属性值的类型。
 
 例如，有一个函数，接收一个对象：
 ```ts
@@ -121,12 +122,12 @@ function printCoord(pt: { x: number; y: number }) {
 }
 printCoord({ x: 3, y: 7 });
 ```
-我们的参数类型注释有两个属性——`x` 和 `y`——它们都是 `number` 类型。你可以使用 `,` 或 `;` 分隔符去分隔属性，并且最后一个属性可不用写分隔符。
+我们的参数类型注释有两个属性——`x` 和 `y`——它们值都是 `number` 类型。你可以使用 `,` 或 `;` 分隔符去分隔属性，并且最后一个属性可不用写分隔符。
 
-如果你没有指定属性类型，它将被认定为 `any`。
+如果你没有指定属性值类型，它将被认定为 `any`。
 
 ### 可选属性
-对象类型还可以指定属性是否为可选的。在属性名称的后面添加一个 `?` 标识符。
+对象类型还可以指定属性是否为**可选的**。在属性名称的后面添加一个 `?` 标识符。
 
 ```ts
 function printName(obj: { first: string; last?: string }) {
@@ -139,20 +140,20 @@ printName({ first: "Alice", last: "Alisson" });
 在 JavaScript 中，如果你访问一个不存在的属性，你将得到 `undefined` 值，而不是运行时错误。所以，当你读取一个可选属性时，必须检查它是否为 `undefined`。
 ```ts
 function printName(obj: { first: string; last?: string }) {
-    // 如果没有 'obj.last' 属性可能会崩溃!
+    // 如果没有 'obj.last' 属性，可能会崩溃!
     console.log(obj.last.toUpperCase());
-    // Error：Object is possibly 'undefined'.
+    Error: // Object is possibly 'undefined'.
     
+    // ok
     if (obj.last !== undefined) {
-        // OK
         console.log(obj.last.toUpperCase());
     }
-    // 使用先进的 JavaScript 语法，安全替代方案:
+    // 或者使用先进的 JavaScript 语法，安全替代方案:
     console.log(obj.last?.toUpperCase());
 }
 ```
 ## 联合类型
-TypeScript 类型系统允许你使用各种各样的操作符在现有类型的基础上构建新类型。让我们用有趣的方法开始组合它们吧。
+TypeScript 类型系统允许你使用各种各样的操作符在现有类型的基础上构建新类型。让我们用有趣的方式开始组合它们吧。
 
 ### 定义一个联合类型
 组合类型的第一种方法是联合类型。联合类型是由两个或多个其他类型组成的，表示值可以是这些类型中的任何一种。我们把这些类型中的每一个称为联合成员。
@@ -168,7 +169,7 @@ printId(101);
 printId("202");
 // Error
 printId({ myID: 22342 });
-// Error：'{ myID: 22342 }' 类型实参不能赋值给 'string | number ' 类型形参
+Error: //'{ myID: 22342 }' 类型实参不能赋值给 'string | number ' 类型形参
 ```
 ### 使用联合类型
 赋值给联合类型匹配的值很容易——只需提供与联合的任何成员匹配的类型。那如果你有一个联合类型的值，又该如何使用它呢?
@@ -177,14 +178,13 @@ printId({ myID: 22342 });
 ```ts
 function printId(id: number | string) {
     console.log(id.toUpperCase());
-    // Error：
-    // 类型 'string | number' 不存在 'toUpperCase' 属性。
-    // 类型 'number' 不存在 'toUpperCase' 属性。
+    Error: // 类型 'string | number' 不存在 'toUpperCase' 属性。
+    Error: // 类型 'number' 不存在 'toUpperCase' 属性。
 }
 ```
-解决方案是用代码缩窄联合类型范围，就像在的 JavaScript 中一样。当 TypeScript 可以根据代码结构为值推断出更具体的类型时，就会发生缩窄。
+解决方案是用代码缩窄联合类型的范围。TypeScript 可以根据代码结构把值推断为更具体的类型，称为缩窄。
 
-例如，TypeScript 知道只有 `string` 的值使用 `typeof` 操作符返回 `"string"`：
+例如，TypeScript 知道只有 `string` 类型的值使用 `typeof` 操作符才会返回 `"string"`：
 ```ts
 function printId(id: number | string) {
     if (typeof id === "string") {
@@ -210,7 +210,7 @@ function welcomePeople(x: string[] | string) {
 ```
 注意，在else分支中，我们不需要做任何特殊的事情，如果 `x` 不是 `string[]` 类型，那么它就是 `string` 类型。
 
-联合类型的所有成员有可能会有共同点。例如，联合中的每个成员都有一个共同的属性，那么你可以使用该属性而不需要窄化。
+还有另一种情况，联合类型的所有成员有可能会有共同点。例如，联合中的每个成员都有一个共同的属性，那么你可以使用该属性而不需要缩窄。
 
 例子，数组和字符串都有一个 `slice` 方法:
 ```ts
@@ -220,7 +220,7 @@ function getFirstThree(x: number[] | string) {
 }
 ```
 ## 类型别名
-我们之前使用对象类型和联合类型是通过直接编写类型注释。这很方便，但是不能在其它相同类型的地方引用它，这时候我们就得用类型别名。
+我们之前使用对象类型和联合类型是通过直接编写类型注释。这很方便，但是不能在其它相同类型的地方复用，这时候我们就得用类型别名。
 
 类型别名的语法是：
 ```ts
@@ -241,7 +241,7 @@ printCoord({ x: 100, y: 100 });
 ```ts
 type ID = number | string;
 ```
-请注意，别名只是别名而已——你不能使用类型别名来创建同一类型的不同的 “版本”。当您使用别名时，就像你编写了实际类型一样。如下例子，这段代码可能看起来不合法，但其实是没问题的，因为 `UserInputSanitizedString` 和 `new input` 都是 `string` 类型:
+请注意，别名只是别名而已。当你使用别名时，就像你编写了实际类型一样。如下例子，这段代码可能看起来不合法，但其实是没问题的，因为 `UserInputSanitizedString` 和 `"new input"` 都是 `string` 类型:
 ```ts
 declare function getInput(): string;
 declare function sanitize(str: string): string;
@@ -275,39 +275,40 @@ printCoord({ x: 100, y: 100 });
 就像我们上面使用的类型别名一样，这个示例就像我们在使用匿名对象类型。TypeScript 只关心我们传递给 `printCoord` 的值的结构——它只关心它是否具相同的属性。只关心类型的结构和功能，这就是为什么我们称 TypeScript 为结构类型系统的原因。
 
 ### 类型别名和接口之间的区别
-类型别名和接口非常相似，在许多情况下使用哪个都可以。接口的大多数特性，类型是可以用的，关键的区别是，类型别名不能参与[声明合并](https://www.typescriptlang.org/play?#code/PTAEnvlRTuUB41DgzQSOUFRygYFULAqgQt0KXGhj5UDD-gseUG34wGQjAIFUDc9ALgChqBLAOwBcBTAJwDMBDAYxdACyXALbCuAG1ABvaqDmgA5iwYBXAM6VQapm0YLqAX1qNWnXvyGiJ02fIBGbFiwAmAfk3bdDfUeo8A9gzaoFwMdGLimpYRoAC8NvKKyuqaAEQAjABMAMwALKkANLZyIKCAjJqApLGA9GaAB2qAXHKgDk7OoICj+oDeGVWA6tqAZN6ATHLFjY4umumGtKWAsHKAvwFwSIAfbsjogN4+gNHqgNRKqLRMAJ4ADvwASix7THTi-PEyiUqqGlo6euPUuwegx6fnlwn2w24ej28hiAA)，但接口可以。
+类型别名和接口非常相似，在许多情况下使用哪个都可以。接口的大多数特性，类型别名是可以用的，关键的区别是，类型别名不能参与[声明合并](https://www.typescriptlang.org/play?#code/PTAEnvlRTuUB41DgzQSOUFRygYFULAqgQt0KXGhj5UDD-gseUG34wGQjAIFUDc9ALgChqBLAOwBcBTAJwDMBDAYxdACyXALbCuAG1ABvaqDmgA5iwYBXAM6VQapm0YLqAX1qNWnXvyGiJ02fIBGbFiwAmAfk3bdDfUeo8A9gzaoFwMdGLimpYRoAC8NvKKyuqaAEQAjABMAMwALKkANLZyIKCAjJqApLGA9GaAB2qAXHKgDk7OoICj+oDeGVWA6tqAZN6ATHLFjY4umumGtKWAsHKAvwFwSIAfbsjogN4+gNHqgNRKqLRMAJ4ADvwASix7THTi-PEyiUqqGlo6euPUuwegx6fnlwn2w24ej28hiAA)，但接口可以。
 
-![1678285151707.jpg](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/acefb5fe1be242af830a5fa4924e1054~tplv-k3u1fbpfcp-watermark.image?)
 
 ![1678285167682.jpg](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cbc26043927c4339b2b740de7f9dabc8~tplv-k3u1fbpfcp-watermark.image?)
 
+![1678285151707.jpg](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/acefb5fe1be242af830a5fa4924e1054~tplv-k3u1fbpfcp-watermark.image?)
+
 你将在后面的章节中了解更多相关的知识，如果你不能立即理解以下概念，请不要担心。
-- 在 TypeScript 4.2 版本之前，类型别名的名称可能会[出现在错误消息中](https://www.typescriptlang.org/play?ts=4.1.5#code/PTAEjR-RF6MCzVExUx76MBG2h7A0GA6hpzUBN+h-eUBSuoBLAOwBcBTAJwDMBDAYzNEBC3QWBVAHzwCgPjzr7GAsjQC2wmgBtQAbw6g5oIiLIAuUAGcSFYgHMOAXy5UArkTokCAeyKgydABYWhoiQAphqp2PEBKabPl0VmoW4mQAdOIW2m5hisJk3vpcIDZh2mGggNBygEbpTAiAh-LIgNwGgPRmeOxynhKgHLYOVeIuUnJxKqAAjABMAMwALN2geokcKYDK+oAAcoBUcoDePoDR6oCFNoCQ5oDzfoDj8YDfcoCq8oBG+oDw+kyAsyaAOvKAb6aAMP+AxQmAEnKABvKAs3KAbI6A98qAp3KA6fqADEqAm-Ezs4DUSiwjoAuOUAQ8qAYADlBwSABPAAOjAAMgQAF40CgAE1AAF4-PIFEpVBotERdAYOMZTOYrDZ7BYkaiMS5xKp6Wj0b4ZHjAkRgqEIlEmbElIkySlAAJGLwKyEeZVwFVZGNqtIV6Ka+Piqi6fQArENkmBAGLyJQmv0A1RGAG3jAEbGJxGYEA0fKAIM1AFj-eEAYXKAUMVAHb+gFPdQDuinNQAB5YQEEhnCUIFCoQB8ZoAuT0Ay36AHPM5oAYAMAsHIldhcGHw0AAQQo9DsRAImJxwdDAB5mq1CZodAAaUChbRqVQADkGTYA5C21N2AHw1ckmMyWax1CwAZVhpcoTNUBaLJfZuICQRC4Ui0XEQviIttoClS3KbHzhfsK6VDhnc4oatrHR6vW1Tb7HaGQA)，而接口的名称则始终出现在报错信息中。
+- 在 TypeScript 4.2 版本之前，类型别名的名称**可能**会[出现在错误消息中](https://www.typescriptlang.org/play?ts=4.1.5#code/PTAEjR-RF6MCzVExUx76MBG2h7A0GA6hpzUBN+h-eUBSuoBLAOwBcBTAJwDMBDAYzNEBC3QWBVAHzwCgPjzr7GAsjQC2wmgBtQAbw6g5oIiLIAuUAGcSFYgHMOAXy5UArkTokCAeyKgydABYWhoiQAphqp2PEBKabPl0VmoW4mQAdOIW2m5hisJk3vpcIDZh2mGggNBygEbpTAiAh-LIgNwGgPRmeOxynhKgHLYOVeIuUnJxKqAAjABMAMwALN2geokcKYDK+oAAcoBUcoDePoDR6oCFNoCQ5oDzfoDj8YDfcoCq8oBG+oDw+kyAsyaAOvKAb6aAMP+AxQmAEnKABvKAs3KAbI6A98qAp3KA6fqADEqAm-Ezs4DUSiwjoAuOUAQ8qAYADlBwSABPAAOjAAMgQAF40CgAE1AAF4-PIFEpVBotERdAYOMZTOYrDZ7BYkaiMS5xKp6Wj0b4ZHjAkRgqEIlEmbElIkySlAAJGLwKyEeZVwFVZGNqtIV6Ka+Piqi6fQArENkmBAGLyJQmv0A1RGAG3jAEbGJxGYEA0fKAIM1AFj-eEAYXKAUMVAHb+gFPdQDuinNQAB5YQEEhnCUIFCoQB8ZoAuT0Ay36AHPM5oAYAMAsHIldhcGHw0AAQQo9DsRAImJxwdDAB5mq1CZodAAaUChbRqVQADkGTYA5C21N2AHw1ckmMyWax1CwAZVhpcoTNUBaLJfZuICQRC4Ui0XEQviIttoClS3KbHzhfsK6VDhnc4oatrHR6vV13iAA)，而接口的名称则**始终**出现在报错信息中，4.2 及之后版本，则都始终显示名称。
 - 接口名称始终出现在错误消息中，但只有在按名称使用时才会出现。（[例子](https://www.typescriptlang.org/play?#code/PTAEjR-RF6MCzVExUx76MBG2h7A0GA6hpzUBN+h-eUBSuhS40GPlQWBVAHzwC4AoSgSwDsAXAUwCcAzAQwGMnQBZDgFtBHADagA3pVAzQdIU3KgAzgxb0A5pQC+1NgFc6XBjQD2dUEy4ALUwOFiAFIKX2RogJSTpsrueWmokwAdKKmGs7B8oJMHjrUIJbBGsGggNBygEbpgCFuCKiA3AaA9GZ4ZPxC7qCUVrZuThJyCkoAjABMAMwALK2g2nGUiYBG+oBDyqCAOASCgLgEoFmA3j6A0eqAMSpEpQ7iM7OAMdqAFoqAAHKA7BZ9YIBi8qAAKgCeAA5MAMpc6hcMoICwcoBY8oAU6ggogLRygAvGgAxKy3cekMxjMFiqpgAgnQaO5nEo6tFFCo1Jpul4pLJQH46AEgqFwpEkXFdJUbFCYXDEQ1QC0OgBWdFAA)）
 - 类型别名不能参与[声明合并](https://www.typescriptlang.org/play?#code/PTAEnvlRTuUB41DgzQSOUFRygYFULAqgQt0KXGhj5UDD-gseUG34wGQjAIFUDc9ALgChqBLAOwBcBTAJwDMBDAYxdACyXALbCuAG1ABvaqDmgA5iwYBXAM6VQapm0YLqAX1qNWnXvyGiJ02fIBGbFiwAmAfk3bdDfUeo8A9gzaoFwMdGLimpYRoAC8NvKKyuqaAEQAjABMAMwALKkANLZyIKCAjJqApLGA9GaAB2qAXHKgDk7OoICj+oDeGVWA6tqAZN6ATHLFjY4umumGtKWAsHKAvwFwSIAfbsjogN4+gNHqgNRKqLRMAJ4ADvwASix7THTi-PEyiUqqGlo6euPUuwegx6fnlwn2w24ej28hiAA)，但接口可以。
-- 接口只能用于声明对象的形状，不能用于重命名原始类型（[例子](https://www.typescriptlang.org/play?#code/PTAEn95QKV0bx9Gj1RqJULAqgYlUKXGhj5UN3Kh540A-xgAOUCo5QT+1BDGIChyBLAOwBcBTAJwDMBDAYwdAEEaB5AEYArBhzoBGUAG9yoeaABubADYBXBgC5QAZzpNaAc3IBfSnQCeAB258ho8QCZQAXhlyFy9Vt36jpyhAIGAREQFnEwF8VREB85UBpzThyIOIMQFNzQBfowHozQFg5QHvlQBkIwBC3c2tuAGU2Gio6KgAvBgATUr8aQ1dfAxbySxtQAFFFBhoAOTUAW0FmNpoxiaZKWkZWTm4ADVAGAA9GGnqddqN3AKA)）。
+- 接口只能用于声明对象的形状，不能用于重命名原始类型。
 
 大多数情况下，你可以根据个人喜好来选择是用接口还是类型别名，TypeScript 在必要的时候会告诉你需要使用其它类型的声明。如果你想要去探索，可以一直使用接口，直到你需要使用类型别名的功能。
 
 ## 类型断言
 有时候你知道关于值的类型信息，但 TypeScript 不知道。
 
-例如，如果你使用 `document.getElementById`，TypeScript 只知道将返回某种 `HTMLElement` 类型，但是你可能知道你的页面总是有一个带有给定 ID 的 `HTMLCanvasElement`，可以用类型断言：
+例如，如果你使用 `document.getElementById`，TypeScript 只知道将返回某种 `HTMLElement` 类型，但是你知道你的页面总是有一个带有给定 ID 的 `HTMLCanvasElement`。这种情况下，可以用类型断言：
 ```ts
 const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;
 ```
 与类型注释一样，类型断言也会被编译器删除，不会影响代码的运行时行为。
 
-你也可以使用尖括号语法(在 `.tsx` 文件中不行)，这是等效的：
+你也可以使用尖括号语法，这是等效的(在 `.tsx` 文件中不行)：
 ```ts
 const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
 ```
->提醒：因为类型断言是在编译时删除的，所以没有与类型断言相关的运行时检查。如果类型断言错误，则不会生成异常或null。
+> 提醒：因为类型断言是在编译时删除的，所以没有与类型断言相关的运行时检查。如果类型断言错误，则不会生成异常或null。
 
 TypeScript只允许类型断言为更具体或更宽松的类型。这条规则可以防止出现 “不可能的” 强制类型转换，例如:
 ```ts
 const x = "hello" as number;
-// 转换 "string" 类型为 "number" 类型可能是错误的，因为两种类型不能充分重叠。如果是故意的，请先将表达式转换为 "unknown" 再转 "number"
+Error: // 转换 "string" 类型为 "number" 类型可能是错误的，因为两种类型不能充分重叠。如果是故意的，请先将表达式转换为 "unknown" 再转 "number"
 ```
 有时这条规则可能过于保守，可能不允许有效且更复杂的操作。那么你可以使用两个断言，首先指向 `any`（或 `unknow`，我们将在后面介绍），然后指向所需的类型:
 ```ts
@@ -337,7 +338,7 @@ let x: "hello" = "hello";
 x = "hello";
 
 x = "howdy";
-// Error：'"howdy"' 类型不能赋值给 '"hello"' 类型
+Error: // '"howdy"' 类型不能赋值给 '"hello"' 类型
 ```
 只能有一个值的变量并没有多大用处！
 
@@ -349,7 +350,7 @@ function printText(s: string, alignment: "left" | "right" | "center") {
 printText("Hello, world", "left"); // OK
 
 printText("G'day, mate", "centre");
-// Error：'"centre"' 类型的实参不能赋值给 '"left" | "right" | "center"' 类型的形参
+Error: // '"centre"' 类型的实参不能赋值给 '"left" | "right" | "center"' 类型的形参
 ```
 数值字面量类型也一样：
 ```ts
@@ -369,7 +370,7 @@ configure({ width: 100 }); // OK
 configure("auto"); // OK
 
 configure("automatic");
-// Error：'"automatic"' 类型的实参不能赋值给 'Options | "auto"' 类型的行参
+Error: // '"automatic"' 类型的实参不能赋值给 'Options | "auto"' 类型的行参
 ```
 还有一种字面量类型：布尔字面量类型。布尔字面量类型只有两种，因为布尔类型只有`true` 和 `false` 两个值。布尔类型实际上只是 `true | false` 联合类型的别名。
 
@@ -381,20 +382,20 @@ if (someCondition) {
     obj.counter = 1;
 }
 ```
-TypeScript 并不认为将 `1` 赋值给之前为 `0` 的字段是错误。或者说 `obj.Counter` 为 `number` 类型，而不是字面量类型 `0`，因为类型决定读和写行为。  
+TypeScript 并不认为将 `1` 赋值给 `obj.Counter` 是错误。因为 `obj.Counter` 为 `number` 类型，而不是字面量类型 `0`，类型决定读取和编写行为。  
 
 同样适用于字符串:
 ```ts
 const req = { url: "https://example.com", method: "GET" };
 handleRequest(req.url, req.method);
 // handleRequest 定义为：function handleRequest(url: string, method: "GET" | "POST"): void
-// Error：'string' 类型的实参不能赋值给 '"GET" | "POST"' 类型的行参
+Error: // 'string' 类型的实参不能赋值给 '"GET" | "POST"' 类型的行参
 ```
-在上面的例子中，`req.method` 被推断为字符串类型，而不是 `"GET"` 字面量类型。因为在创建 `req` 变量和调用 `handleRequest` 函数之间可能会执行其它代码。例如，在调用 `handleRequest` 函数前  `req.method` 也许会被赋值为类似 `"GUESS"` 这样的字符串。因此 TypeScript 认为这样的代码是错误的。
+在上面的例子中，`req.method` 被推断为 `string` 类型，而不是 `"GET"` 字面量类型。`string` 类型不能赋值给联合类型 `"GET" | "POST"`，因为在创建 `req` 变量和调用 `handleRequest` 函数之间可能会执行其它代码。例如，在调用 `handleRequest` 函数前，把 `req.method` 赋值为类似 `"GUESS"` 这样的字符串。
 
 有两种方法可以解决这个问题。
 
-1. 你可以在任意位置添加类型断言来改变推断：
+1. 你可以添加类型断言来改变推断：
     ```ts
     // Change 1:
     const req = { url: "https://example.com", method: "GET" as "GET" };
@@ -410,7 +411,7 @@ handleRequest(req.url, req.method);
     const req = { url: "https://example.com", method: "GET" } as const;
     handleRequest(req.url, req.method);
     ```
-    `as const` 后缀的作用类似于 `const`，但适用于类型系统，确保所有属性都被定义为字面量类型，而不是字符串或数字等更通用的版本。
+    `as const` 后缀的作用类似于 `const`，但适用于类型系统，确保 `req` 所有属性都被定义为字面量类型，而不是 `string` 或 `number` 等更通用的版本。
 
 ## `null` 和 `undefined`
 JavaScript 有两个基本值用来表示不存在或未初始化： `null` 和 `undefined`。
@@ -418,9 +419,9 @@ JavaScript 有两个基本值用来表示不存在或未初始化： `null` 和 
 TypeScript 也有两个同名的对应类型。这些类型的行为取决于是否打开了 [strictNullChecks](https://www.typescriptlang.org/tsconfig#strictNullChecks) 选项。
 
 ### `strictNullChecks` 关闭
-关闭 strictNullChecks 后，可能为 `null` 或 `undefined` 的值仍然可以正常访问，并且 `null` 和 ` undefined` 的值可以分配给**对象任何类型的属性**。这类似于没有 null 检查的语言（如c#， Java）的行为。缺乏对这些值的检查往往是 bug 的主要来源；建议在代码库中使用严格的检查方法。
+关闭 **strictNullChecks** 后，有可能为 `null` 或 `undefined` 的值仍然可以正常访问，并且 `null` 和 ` undefined` 的值可以分配给**对象任何类型的属性**。这类似于没有 null 检查的语言（如c#， Java）的行为。但是，缺乏对这些值的检查往往是 bug 的主要来源；建议在代码库中使用严格的检查方法。
 ### `strictNullChecks` 开启
-开启 strictNullChecks 后，当值为 `null` 或 `undefined` 时，需要在使用该值的方法或属性之前，测试这些值。就像在使用可选属性之前检查是否为 `undefined` 一样。例如，使用缩窄来检查可能为 `null` 的值：
+开启 **strictNullChecks** 后，当值有可能为 `null` 或 `undefined` 时，在使用该值的方法或属性之前需要测试这些值。就像在使用可选属性之前检查是否为 `undefined` 一样。例如，使用缩窄来检查可能为 `null` 的值：
 ```ts
 function doSomething(x: string | null) {
     if (x === null) {
@@ -433,7 +434,7 @@ function doSomething(x: string | null) {
 ## 非空断言运算符（后缀 `!`）
 TypeScript 还有一个特殊的语法，可以在不做任何显式检查的情况下，从类型中删除 `null` 和 `undefined`。在任何表达式之后添加类型断言 `!` 都是有效的，表明该值不是 `null` 或 `undefined`：
 ## 枚举
-枚举是 TypeScript 添加到 JavaScript 的一个特性，它允许描述一个值，用一组命名常量的其中之一。与大多数 TypeScript 特性不同，枚举不是在类型层面添加到 JavaScript 中的，而是添加到了语言本身和运行时的。正因为如此，这是一个你应该知道的功能。你可以在 [Enum reference page](https://www.typescriptlang.org/docs/handbook/enums.html) 中阅读更多关于枚举的信息。
+枚举是 TypeScript 添加到 JavaScript 的一个特性，它允许描述一个值，用一组命名常量的其中之一。与大多数 TypeScript 特性不同，枚举不是在类型层面添加到 JavaScript 中的，而是添加到了语言本身和运行时的。正因为如此，这是一个你应该知道的功能。你可以在 [枚举参考页](https://juejin.cn/post/7224344504776589373) 中阅读更多关于枚举的信息。
 ## 不常用原始类型
 在 JavaScript 中的其它原始类型，TypeScript 中也有对应的表示形式。在这里简单介绍下，不会深入讨论。
 ### bigInt
@@ -453,14 +454,16 @@ const firstName = Symbol("name");
 const secondName = Symbol("name");
 
 if (firstName === secondName) {
-    // Error：这个条件总是返回'false'，因为类型 'typeof firstName' 和类型 'typeof secondName' 没有重叠。
+    Error: // 这个条件总是返回'false'，因为类型 'typeof firstName' 和类型 'typeof secondName' 没有重叠。
 }
 ```
-你可以在 [Symbols 参考页](https://www.typescriptlang.org/docs/handbook/symbols.html) 了解关于 Symbol 的更多信息。
+你可以在 [Symbols 参考页](https://juejin.cn/post/7225432788043038775) 了解关于 Symbol 的更多信息。
 
 
 感谢观看，如有错误，望指正
 
 > 官网文档地址： <https://www.typescriptlang.org/docs/handbook/2/everyday-types.html>
->
-> 本章已上传 github： <https://github.com/Mario-Marion/TS-Handbook>
+
+**上一篇：** [基础 The Basics-官网Handbook（一）](https://github.com/Mario-Marion/TS-Handbook/blob/main/Handbook/The-Basics__%E4%B8%80.md)
+
+**下一篇：** [缩窄 Narrowing-官网Handbook（三）](https://github.com/Mario-Marion/TS-Handbook/blob/main/Handbook/Narrowing__%E4%B8%89.md)

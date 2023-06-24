@@ -1,12 +1,9 @@
----
-highlight: vs2015
----
 # The Basics
 
 欢迎来到手册第一页，如果这是你第一次使用 TypeScript - 你可以从 ["入门"](https://www.typescriptlang.org/docs/handbook/intro.html#get-started) 指南开始。
 
 在 JavaScript 中每个值都有一系列行为，你可以通过运行不同的操作进行观察。听起来很抽象，举个简单的例子，假设我们可能在一个名为 `message` 的变量上运行这些操作：
-```ts
+```js
   // 访问 'message' 上的 'toLowerCase' 属性并调用
   message.toLowerCase();
   // 调用 'message'
@@ -24,14 +21,14 @@ highlight: vs2015
 这些问题的答案通常是我们在编写 JavaScript 的时候牢记于心的。我们只能希望所有细节都是正确的。
 
 假设 `message` 是按照以下方法定义的。
-```ts
+```js
 const message = "Hello World!";
 ```
 
 你可能已经猜到，如果我们尝试运行 `message.toLowerCase()`，将会得到只有小写的 "hello world!"。
 
 那第二行代码呢？如果你熟悉 JavaScript，知道这会抛出异常：
-```ts
+```js
 TypeError: message is not a function
 ```
 当我们运行代码的时候，JavaScript 运行时是通过确认值的类型而决定它有什么类型的行为和能力。这就是 `TypeError` 报错提示的内容（字符串 `"Hello World!"` 不能作为函数调用）。
@@ -43,7 +40,7 @@ function fn(x) {
 }
 ```
 这个函数参数得是一个对象，并且有一个可调用的 `filp` 属性，才能正常运行。但是 JavaScript 并没有在运行时检查并显示这些信息。在 JavaScript 中，要知道 `fn` 对特定值做了什么，就是调用看看会发生什么。这样的特征使得我们很难在代码执行前进行相关的预测。我们编写代码时必须预测 `fn` 函数调用后的多种可能，并用控制流处理：
-```ts
+```js
 function fn(x) {
   if(x.flip && typeof x.flip === 'function'){
     return x.flip(); 
@@ -64,8 +61,8 @@ TS 使用了静态类型系统，在运行代码之前可以对期望的代码�
 const message = "hello!";
 message();
 
-// This expression is not callable.
-// Type 'String' has no call signatures.
+Error: // This expression is not callable.
+Error: // Type 'String' has no call signatures.
 ```
 用 TypeScript 编写上面的示例，会在我们运行代码之前给我们一个错误提示。
 
@@ -73,7 +70,7 @@ message();
 目前为止，我们一直在讨论运行时错误——JavaScript 运行时会告诉我们它认为荒谬的情况。出现这种情况是因为 [ECMAScript 规范](https://tc39.es/ecma262/) 明确说明，语言在遇到意外情况时如何表现。
 
 例如，规范说尝试调用某些不可调用的东西时，应该抛出错误。这听起来像是"显而易见的行为"，那如果访问一个对象上不存在的属性呢？也应该抛出错误吧。然而，JavaScript 给了我们不同的行为，返回了 undefined 值。
-```ts
+```js
 const user = {
   name: "Daniel",
   age: 26,
@@ -88,10 +85,10 @@ const user = {
 };
  
 user.location;
-// Property 'location' does not exist on type '{ name: string; age: number; }'.
+Error: // Property 'location' does not exist on type '{ name: string; age: number; }'.
 ```
 虽然有时得在可以表达的内容上进行让步（无该属性时，不能再表达 undefined 值），但目的是在我们的程序中捕获合法的错误。TypeScript 捕获了很多合法的错误。例如：拼写错误：
-```ts
+```js
 const announcement = "Hello World!";
 
 // 你能多快发现错别字?
@@ -106,7 +103,7 @@ announcement.toLocaleLowerCase();
 function flipCoin() {
   // 忘记调用 Math.random()
   return Math.random < 0.5;
-Operator '<' cannot be applied to types '() => number' and 'number'.
+  Error: // Operator '<' cannot be applied to types '() => number' and 'number'.
 }
 ```
 或基本逻辑错误：
@@ -115,7 +112,7 @@ const value = Math.random() < 0.5 ? "a" : "b";
 if (value !== "a") {
   // ...
 } else if (value === "b") {
-  // 永远不会到达
+  Error: // This comparison appears to be unintentional because the types '"a"' and '"b"' have no overlap.
 }
 ```
 ## 类型工具
@@ -150,7 +147,7 @@ tsc hello.ts
 // Greets the world.
 console.log("Hello world!");
 ```
-在这种情况下，TypeScript 需要转换的东西非常少，所以它看起来和我们写的完全相同。编译器试图产出干净的代码，使之看起来像开发者编写的一样。这并不容易，TypeScript 编译会保持缩进，换行，并尽量保留注释。
+在这种情况下，TypeScript 需要转换的东西非常少，所以它看起来和我们写的完全相同。编译器试图产出干净的代码，使之看起来像开发者编写的一样。这很不容易，因为 TypeScript 编译会保持缩进，换行，并尽量保留注释，等处理。
 
 让我们重写 `hello.ts`，刻意让类型检查报错:
 ```ts
@@ -194,7 +191,7 @@ function greet(person: string, date: Date) {
 }
  
 greet("Maddison", Date());
-// Argument of type 'string' is not assignable to parameter of type 'Date'.
+Error: // Argument of type 'string' is not assignable to parameter of type 'Date'.
 ```
 TypeScript 在我们第二个参数上报告了一个错误，这是为什么？
 
@@ -238,13 +235,13 @@ greet("Maddison", new Date());
 ```
 变成
 ```js
-"Hello " + person + ", today is " + date.toDateString() + "!";
+"Hello ".concat(person, ", today is ").concat(date.toDateString(), "!");
 ```
 为什么会这样？
 
 因为，模板字符串是 ECMAScript 2015 版本（又叫 ECMAScript 6，ES2015，ES6，等等）的特性。从较新或 “更高” 版本的 ECMAScript 向下移动到较旧或 “较低” 版本的过程有时称为降级。
 
-默认情况下 TypeScript 编译为 JavaScript 的版本为 ES3 版本，ECMAScript 一个非常的旧的版本，我们可以使用 [target](https://www.typescriptlang.org/tsconfig#target) 选项来选择更高的版本。运行 `--target es2015` 改变 TypeScript 编译目标为 ECMAScript 2015，意味着代码能够在支持 ECMAScript 2015 的任何地方运行。所以运行 `tsc --target es2015 hello.ts` 代码编译为：
+默认情况下 TypeScript 编译目标为 JavaScript 的 ES3 版本，ECMAScript 一个非常的旧的版本，我们可以使用 [target](https://www.typescriptlang.org/tsconfig#target) 选项来选择更高的版本。运行 `--target es2015` 改变 TypeScript 编译目标为 ECMAScript 2015，意味着代码能够在支持 ECMAScript 2015 的任何地方运行。所以运行 `tsc --target es2015 hello.ts` 代码编译为：
 ```ts
 function greet(person, date) {
   console.log(`Hello ${person}, today is ${date.toDateString()}!`);
@@ -268,7 +265,6 @@ TypeScript 有几个可以打开或关闭的严格类型检查标志，我们所
 
 感谢观看，如有错误，望指正
 
->官网地址： <https://www.typescriptlang.org/docs/handbook/2/basic-types.html>
->
->github 资料： <https://github.com/Mario-Marion/TS-Handbook>
+> 官网文档地址： <https://www.typescriptlang.org/docs/handbook/2/basic-types.html>
 
+**下一篇：** [常用类型 Everyday Types-官网Handbook（二）](https://github.com/Mario-Marion/TS-Handbook/blob/main/Handbook/Everyday-Types__%E4%BA%8C.md)
